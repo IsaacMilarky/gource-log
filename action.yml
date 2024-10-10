@@ -19,9 +19,13 @@ outputs:
     description: 'Description of output-one'
   output-two:
     description: 'Description of output-two'	
-runs:
-  using: 'docker'
-  image: 'Dockerfile'
-  args:
-    - ${{ inputs.input-one }}
-    - ${{ inputs.input-two }}
+jobs:
+  run-gource:
+    runs-on: ubuntu-latest
+    container:
+      image : 'Dockerfile'
+      options: --user root
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+        gource --version
