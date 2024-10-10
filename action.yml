@@ -1,24 +1,10 @@
 # Make sure to change the action name here (must be unique).
 # Update the rest as needed.
-name: 'unique-action-goes-here'
-description: 'BRIEF DESCRIPTION OF YOUR ACTION'
+name: 'gource-log'
+description: 'Github Action to run Gource on the desired repository and store the log for later use.'
 branding: # Look at documentation for branding options/requirements. These are my favorites.
   icon: 'book-open'
-  color: 'green'
-inputs:
-  input-one:  
-    description: 'Description of input-one'
-    required: false
-    default: 'default value goes here'
-  input-two:
-    description: 'Description of input-two'
-    required: false
-    default: 'default value goes here'
-outputs:
-  output-one:
-    description: 'Description of output-one'
-  output-two:
-    description: 'Description of output-two'	
+  color: 'green' 
 jobs:
   run-gource:
     runs-on: ubuntu-latest
@@ -28,4 +14,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: |
+        git pull
         gource --version
+        gource --output-custom-log ${{ github.event.repository.name }}.log .
+        git config user.name 'GitHub Actions'
+        git config user.email 'actions@users.noreply.github.com'
+        git add -A
+        timestamp=$(date -u)
+        git commit -m "update gource data: ${timestamp}" || exit 0
+      - name: Push to ${{ github.ref_name }}
+        uses: CasperWA/push-protected@v2
+        with:
+          token: ${{ secrets.METRICS_GITHUB_TOKEN }}
+          branch: ${{ github.ref_name }}
