@@ -1,0 +1,21 @@
+on:
+    workflow_dispatch:
+
+jobs:
+    update-contributors:
+        runs-on: ubuntu-latest
+        name: Update contributors info in MAINTAINERS.md
+        permissions:
+            contents: write
+            pull-requests: write
+        steps:
+            # Update contributor list
+            - name: Contribute List
+              uses: akhilmhdh/contributors-readme-action@v2.3.10
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  # https://github.com/marketplace/actions/contribute-list#optional-parameters
+                  readme_path: MAINTAINERS.md
+                  use_username: false
+                  commit_message: "BOT: Update contributors info in MAINTAINERS.md"
