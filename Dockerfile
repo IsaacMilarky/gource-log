@@ -12,5 +12,9 @@ FROM cicirello/pyaction:4
 # FROM ghcr.io/cicirello/pyaction:4
 # FROM ghcr.io/cicirello/pyaction:3
 
+
+RUN apt-get update && apt-get install -y \
+    gource
+
 COPY entrypoint.py /entrypoint.py
 ENTRYPOINT ["/entrypoint.py"]
