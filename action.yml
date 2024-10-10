@@ -5,25 +5,6 @@ description: 'Github Action to run Gource on the desired repository and store th
 branding: # Look at documentation for branding options/requirements. These are my favorites.
   icon: 'book-open'
   color: 'green' 
-jobs:
-  run-gource:
-    runs-on: ubuntu-latest
-    container:
-      image : 'Dockerfile'
-      options: --user root
-    steps:
-      - uses: actions/checkout@v4
-      - run: |
-        git pull
-        gource --version
-        gource --output-custom-log ${{ github.event.repository.name }}.log .
-        git config user.name 'GitHub Actions'
-        git config user.email 'actions@users.noreply.github.com'
-        git add -A
-        timestamp=$(date -u)
-        git commit -m "update gource data: ${timestamp}" || exit 0
-      - name: Push to ${{ github.ref_name }}
-        uses: CasperWA/push-protected@v2
-        with:
-          token: ${{ secrets.METRICS_GITHUB_TOKEN }}
-          branch: ${{ github.ref_name }}
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
